@@ -2,6 +2,7 @@ from getpass import getpass
 from korisnici import korisnici, addUser
 from namestaj import namestaj
 from usluge import usluge
+from readupdateCSV import updateCsv
 
 def login():
     x = input("Da li ste novi korisnik ili ste vec registrovani?(Napisite: novi ili stari): ")
@@ -39,31 +40,46 @@ def login():
                 print("Pogresili ste. Pokusajte ponovo")             
 
 uloga = login()
+korpa = []
 def kupovina():
     x = input("Da li zelite da odmah kupite proizvod ili zelite da pogledate katalog?(Napisite: kupovina ili pregled): ")
     while x != 'kupovina' and x != 'pregled':
         print("Molim vas da unesete kupovina ili pregled.")
         x = input("Da li zelite da odmah kupite proizvod ili zelite da pogledate katalog?(Napisite: kupovina ili pregled): ")
     if x == 'kupovina':
-        korpa = []
         y = 0
         while y == 0:
             proizvod = input('Unesite naziv ili sifru namestaja: ')
             for i in range(len(namestaj)):
                 if namestaj[i]['sifra'] == proizvod or namestaj[i]['naziv'] == proizvod:
-                    korpa.append(namestaj[i])
+                    if korpa == []:
+                        korpa.append(namestaj[i])
+                        print(korpa[0]['kolicina'])
+                    else:
+                        for x in range(len(korpa)):
+                            if proizvod == korpa[x]['naziv'] or proizvod == korpa[x]['sifra']:
+                                korpa[x]["kolicina"] += 1
+                            else:
+                                korpa.append(namestaj[x])
+                                korpa[x]['kolicina'] = 1
+                    namestaj[i]['kolicina'] = int(namestaj[i]['kolicina'])
+                    namestaj[i]['kolicina'] = namestaj[i]['kolicina'] - 1
+                    updateCsv('Podaci/namestaj.csv', namestaj)
+                    print("Vasa korpa: ")
+                    pregled(korpa)
                     y = 1
             if y != 1:
                 print("Pokusajte ponovo")
     if x == 'pregled':
         pregled(namestaj)
+
     return korpa
 
 def pregled(csv_fajl):
     print("Sifra | Naziv | Boja | Kolicina | Cena | Kategorija")
     for i in range(len(csv_fajl)):
         line = " | "
-        print(csv_fajl[i]['sifra'] + line + csv_fajl[i]['naziv'] + line + csv_fajl[i]['boja'] + line + csv_fajl[i]['kolicina'] + line + csv_fajl[i]['cena'] + line + csv_fajl[i]['kategorija'])
+        print(csv_fajl[i]['sifra'] + line + csv_fajl[i]['naziv'] + line + csv_fajl[i]['boja'] + line + str(csv_fajl[i]['kolicina']) + line + csv_fajl[i]['cena'] + line + csv_fajl[i]['kategorija'])
 def searching():
     if uloga == 'kupac':
         print("Dobrodosli!")
@@ -71,26 +87,28 @@ def searching():
         y = input("Da li zelite da nastavite kupovinu?(Napisite da ili ne) ")
         while y == 'da':
             if y == 'da':
-                n = input("Da li zelite da kupite jos neki proizvod ili zelite da izbriste neki prozivod iz korpe?(Unesite: kupovina ili brisanje ")
-                while n != "kupovina" and n != 'brisanje':
+                n = input("Da li zelite da kupite jos neki proizvod ili zelite da izbriste neki prozivod iz korpe?(Unesite: kupovina ili brisanje, za izlaz pritisnite enter) ")
+                while n != "kupovina" and n != 'brisanje' and  n != '':
                     print("Pogresili ste. Molim vas pokusajte ponovo")
-                    n = input("Da li zelite da kupite jos neki proizvod ili zelite da izbriste neki prozivod iz korpe?(Unesite: kupovina ili brisanje) ")
+                    n = input("Da li zelite da kupite jos neki proizvod ili zelite da izbriste neki prozivod iz korpe?(Unesite: kupovina ili brisanje, za izlaz pritisnite enter) ")
                 if n == 'kupovina':
                     korpa = kupovina()
                     y = input("Da li zelite da nastavite kupovinu?(Napisite da ili ne) ")
-                else:
+                elif n == 'brisanje':
                     for i in range(len(korpa)):
                         print(korpa[i])
                     while True:
-                        m = input("Koji proizvod zelite da izbrisete? Unesite sifru: ")
+                        m = input("Koji proizvod zelite da izbrisete? (Unesite sifru ili stisnite enter ako zelite da nastavite kupovinu: ")
                         for i in range(len(korpa)):
                             if m == korpa[i]['sifra']:
                                 del korpa[i]
                                 print("Vasa korpa: ")
                                 for i in range(len(korpa)):
                                     print(korpa[i])
-                                break
-                                
+                        if m == '':
+                            break
+                else:
+                    break                          
 
     if uloga == 'menadzer':
         print("Dobrodosli!")
