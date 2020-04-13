@@ -3,6 +3,7 @@ from korisnici import korisnici, addUser
 from namestaj import namestaj
 from usluge import usluge
 from readupdateCSV import updateCsv
+import copy
 
 def login():
     x = input("Da li ste novi korisnik ili ste vec registrovani?(Napisite: novi ili stari): ")
@@ -52,19 +53,20 @@ def kupovina():
             proizvod = input('Unesite naziv ili sifru namestaja: ')
             for i in range(len(namestaj)):
                 if namestaj[i]['sifra'] == proizvod or namestaj[i]['naziv'] == proizvod:
+                    namestaj_copy = copy.deepcopy(namestaj)             
+                    namestaj_copy[i]['kolicina'] = 1
                     if korpa == []:
-                        korpa.append(namestaj[i])
-                        print(korpa[0]['kolicina'])
+                        korpa.append(namestaj_copy[i])
                     else:
-                        for x in range(len(korpa)):
-                            if proizvod == korpa[x]['naziv'] or proizvod == korpa[x]['sifra']:
-                                korpa[x]["kolicina"] += 1
-                            else:
-                                korpa.append(namestaj[x])
-                                korpa[x]['kolicina'] = 1
-                    namestaj[i]['kolicina'] = int(namestaj[i]['kolicina'])
-                    namestaj[i]['kolicina'] = namestaj[i]['kolicina'] - 1
-                    updateCsv('Podaci/namestaj.csv', namestaj)
+                        n = 0
+                        for i in korpa:
+                            if proizvod  == i['sifra'] or proizvod == i['naziv']:
+                                i['kolicina'] += 1
+                                n += 1
+                        if n == 0:
+                            korpa.append(namestaj_copy[i])
+                    #namestaj[i]['kolicina'] = str(int(namestaj[i]['kolicina']) - 1)
+                    #updateCsv('Podaci/namestaj.csv', namestaj)
                     print("Vasa korpa: ")
                     pregled(korpa)
                     y = 1
@@ -73,17 +75,18 @@ def kupovina():
     if x == 'pregled':
         pregled(namestaj)
 
-    return korpa
+    
 
 def pregled(csv_fajl):
     print("Sifra | Naziv | Boja | Kolicina | Cena | Kategorija")
     for i in range(len(csv_fajl)):
         line = " | "
-        print(csv_fajl[i]['sifra'] + line + csv_fajl[i]['naziv'] + line + csv_fajl[i]['boja'] + line + str(csv_fajl[i]['kolicina']) + line + csv_fajl[i]['cena'] + line + csv_fajl[i]['kategorija'])
+        text = csv_fajl[i]['sifra'] + line + csv_fajl[i]['naziv'] + line + csv_fajl[i]['boja'] + line + str(csv_fajl[i]['kolicina']) + line + csv_fajl[i]['cena'] + line + csv_fajl[i]['kategorija']
+        print(text)
 def searching():
     if uloga == 'kupac':
         print("Dobrodosli!")
-        korpa = kupovina()
+        kupovina()
         y = input("Da li zelite da nastavite kupovinu?(Napisite da ili ne) ")
         while y == 'da':
             if y == 'da':
@@ -92,7 +95,7 @@ def searching():
                     print("Pogresili ste. Molim vas pokusajte ponovo")
                     n = input("Da li zelite da kupite jos neki proizvod ili zelite da izbriste neki prozivod iz korpe?(Unesite: kupovina ili brisanje, za izlaz pritisnite enter) ")
                 if n == 'kupovina':
-                    korpa = kupovina()
+                    kupovina()
                     y = input("Da li zelite da nastavite kupovinu?(Napisite da ili ne) ")
                 elif n == 'brisanje':
                     for i in range(len(korpa)):
