@@ -65,8 +65,8 @@ def kupovina():
                                 n += 1
                         if n == 0:
                             korpa.append(namestaj_copy[i])
-                    #namestaj[i]['kolicina'] = str(int(namestaj[i]['kolicina']) - 1)
-                    #updateCsv('Podaci/namestaj.csv', namestaj)
+                    namestaj[i]['kolicina'] = int(namestaj[i]['kolicina']) - 1
+                    updateCsv('Podaci/namestaj.csv', namestaj)
                     print("Vasa korpa: ")
                     pregled(korpa)
                     y = 1
@@ -104,10 +104,13 @@ def searching():
                         m = input("Koji proizvod zelite da izbrisete? (Unesite sifru ili stisnite enter ako zelite da nastavite kupovinu: ")
                         for i in range(len(korpa)):
                             if m == korpa[i]['sifra']:
+                                for n in range(len(namestaj)):
+                                    if namestaj[n]['sifra'] == korpa[i]['sifra']:
+                                        namestaj[n]['kolicina'] = int(namestaj[n]['kolicina']) + 1
+                                        updateCsv('Podaci/namestaj.csv', namestaj)
                                 del korpa[i]
                                 print("Vasa korpa: ")
-                                for i in range(len(korpa)):
-                                    print(korpa[i])
+                                pregled(korpa)
                         if m == '':
                             break
                 else:
