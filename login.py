@@ -78,11 +78,12 @@ def kupovina():
     
 
 def pregled(csv_fajl):
-    print("Sifra | Naziv | Boja | Kolicina | Cena | Kategorija")
+    keys = list(csv_fajl[0].keys())
+    line = " | "
+    print(*keys, sep = line)
     for i in range(len(csv_fajl)):
-        line = " | "
-        text = csv_fajl[i]['sifra'] + line + csv_fajl[i]['naziv'] + line + csv_fajl[i]['boja'] + line + str(csv_fajl[i]['kolicina']) + line + csv_fajl[i]['cena'] + line + csv_fajl[i]['kategorija']
-        print(text)
+        print(*list(csv_fajl[i].values()), sep = line)
+
 def searching():
     if uloga == 'kupac':
         print("Dobrodosli!")
@@ -122,6 +123,12 @@ def searching():
         while x != 'namestaj' and x != 'korisnici' and x!= 'usluge':
             print("Pogresio si. Molim te ukucaj ponovo")
             x = input("Sta zelis da uradis? Sta zelis da pregledas? (Unesi: namestaj, korisnici ili usluge)")
+        if x == 'namestaj':
+            pregled(namestaj)
+        elif x == 'korisnici':
+            pregled(korisnici)
+        elif x == 'usluge':
+            pregled(usluge)
         
 searching()
 
