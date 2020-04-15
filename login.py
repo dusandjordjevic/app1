@@ -6,39 +6,38 @@ from readupdateCSV import updateCsv
 import copy
 
 def login():
-    x = input("Da li ste novi korisnik ili ste vec registrovani?(Napisite: novi ili stari): ")
-    while x != 'stari' and x != 'novi':
-        print("Molim vas unesite novi ili stari.")
-        x = input("Da li ste novi korisnik ili ste vec registrovani?(Napisite: novi ili stari): ")
-    if x == 'novi':
-        ime = input("Unesite vase ime: ")
-        prezime = input("Unesite vase prezime: ")
-        korisnicko_ime = ime[0].lower() + prezime[0:].lower()
-        print("Vase korisnko ime je: ", korisnicko_ime)
+    korisnicko_ime = input("Unesite vase korisnicko ime: ")
+    sifra = getpass('Unesite vasu sifru: ')
+    for i in range(len(korisnici)):
+        if korisnici[i]['korisnicko ime'] == korisnicko_ime and korisnici[i]['lozinka'] == sifra:
+            print("Uspesno ste se ulogovali ")
+            uloga = korisnici[i]['uloga']
+            return uloga
+        elif korisnici[i]['korisnicko ime'] == korisnicko_ime:
+            print("Pogresna sifra. Pokusajte ponovo")
+            sifra = getpass('Unesite vasu sifru: ')
+            while sifra != korisnici[i]['sifra']:
+                print("Pogresna sifra. Pokusajte ponovo")
+                sifra = getpass('Unesite vasu sifru: ') 
+            print("Uspesno ste se prijavili.")
+            uloga = korisnici[i]['uloga']
+            return uloga
+    
+    print("Izgleda da ste vi novi korisnik.")
+    ime = input("Unesite vase ime: ")
+    prezime = input("Unesite vase prezime: ")
+    korisnicko_ime = ime[0].lower() + prezime[0:].lower()
+    print("Vase korisnko ime je: ", korisnicko_ime)
+    sifra1 = getpass('Unesite sifru: ')
+    sifra2 = getpass("Ponovite sifru: ")
+    while sifra1 != sifra2:
+        print("Sifre se ne poklapaju. Pokusajte ponovo")
         sifra1 = getpass('Unesite sifru: ')
         sifra2 = getpass("Ponovite sifru: ")
-        while sifra1 != sifra2:
-            print("Sifre se ne poklapaju. Pokusajte ponovo")
-            sifra1 = getpass('Unesite sifru: ')
-            sifra2 = getpass("Ponovite sifru: ")
-        sifra = sifra1
-        uloga = "kupac"
-        addUser(ime, prezime, korisnicko_ime, sifra)
-        return uloga
-    if x == 'stari':
-        y = 0
-        while True:
-            korisnicko_ime = input("Unesite vase korisnicko ime: ")
-            sifra = getpass("Unesite vasu sifru: ")
-            for i in range(len(korisnici)):
-                if korisnici[i]['korisnicko ime'] == korisnicko_ime and korisnici[i]['lozinka'] == sifra:
-                    print('Uspesno ste se ulogovali')
-                    uloga = korisnici[i]['uloga']
-                    y = 1 
-            if y == 1:
-                return uloga
-            else:
-                print("Pogresili ste. Pokusajte ponovo")             
+    sifra = sifra1
+    uloga = "kupac"
+    addUser(ime, prezime, korisnicko_ime, sifra)
+    return uloga            
 
 uloga = login()
 korpa = []
@@ -125,6 +124,7 @@ def searching():
             x = input("Sta zelis da uradis? Sta zelis da pregledas? (Unesi: namestaj, korisnici ili usluge)")
         if x == 'namestaj':
             pregled(namestaj)
+            print("Da li zelite da uradite nesto?(Unesite brisanje, izmena, dodavanje")
         elif x == 'korisnici':
             pregled(korisnici)
         elif x == 'usluge':
