@@ -2,7 +2,7 @@ from getpass import getpass
 from korisnici import korisnici, addUser
 from namestaj import namestaj
 from usluge import usluge
-from readupdateCSV import updateCsv
+from readupdateCSV import updateCsv, delete, changeValue
 import copy
 
 def login():
@@ -74,15 +74,17 @@ def kupovina():
     if x == 'pregled':
         pregled(namestaj)
 
-    
-
 def pregled(csv_fajl):
     keys = list(csv_fajl[0].keys())
     line = " | "
     print(*keys, sep = line)
     for i in range(len(csv_fajl)):
         print(*list(csv_fajl[i].values()), sep = line)
-
+def count():
+    sum = 0
+    for i in range(len(korpa)):
+        sum += int(korpa[i]['cena'])
+    print("Vas ukupan racun iznosi: " + sum)
 def searching():
     if uloga == 'kupac':
         print("Dobrodosli!")
@@ -115,19 +117,54 @@ def searching():
                             break
                 else:
                     break                          
+        if y == 'ne':
+            print("Vasa korpa: ")
+            pregled(korpa)
+            count()
 
     if uloga == 'menadzer':
         print("Dobrodosli!")
-        x = input("Sta zelis da uradis? Sta zelis da pregledas? (Unesi: namestaj, korisnici ili usluge)")
-        while x != 'namestaj' and x != 'korisnici' and x!= 'usluge':
-            print("Pogresio si. Molim te ukucaj ponovo")
-            x = input("Sta zelis da uradis? Sta zelis da pregledas? (Unesi: namestaj, korisnici ili usluge)")
-        if x == 'namestaj':
+        m = input("Sta zelis da pregledas? (Unesi: namestaj, korisnici ili usluge) ")
+        while True:
+            if m == 'namestaj':
+                break
+            elif m == 'korisnici':
+                break
+            elif m == "usluge":
+                break
+            else:
+                print("Pogresio si. Molim te ukucaj ponovo")
+                m = input("Sta zelis da uradis? Sta zelis da pregledas? (Unesi: namestaj, korisnici ili usluge)")
+        y = ("Da li zelite da uradite nesto?(Unesite brisanje, izmena, dodavanje,ako zelite da izadjete pretisnite enter")
+        while y != 'brisanje' and y != 'izmena' and y != 'dodavanje' and y != '':
+            print("Pogresio si. Molim te pokusaj ponovo")
+            y = ("Da li zelite da uradite nesto?(Unesite brisanje, izmena, dodavanje,ako zelite da izadjete pretisnite enter")
+        if m == 'namestaj':
             pregled(namestaj)
-            print("Da li zelite da uradite nesto?(Unesite brisanje, izmena, dodavanje")
-        elif x == 'korisnici':
+            if y == "brisanje":
+                while True:
+                    z = input("Unesite sifru namestaja: ")
+                    for i in range(len(namestaj)):
+                        if z == namestaj[i]['sifra']:
+                            delete(z, 'sifra', namestaj, 'namestaj')
+                            break
+            elif y == 'dodavanje':
+                sifra = input("Unesite novu sifru namestaja")
+                naziv = input("Unesite novi naziv")
+                boja = input("Unesite boju namestaja")
+                kolicina = input("Unesite kolicinu novog namestaja")
+                cena = input("Unesite cenu namestaja")
+                kategorija = input("Unesite kategoriju namestaja")
+                
+                novi_namestaj = {'sifra': sifra, 'naziv': naziv, 'boja': boja, 'kolicina': kolicina,
+                'cena': cena, 'kategorija': kategorija}
+                namestaj.append(novi_namestaj)
+                updateCsv('Podaci/namestaj.csv', namestaj)
+
+
+        elif m == 'korisnici':
             pregled(korisnici)
-        elif x == 'usluge':
+        elif m == 'usluge':
             pregled(usluge)
         
 searching()
