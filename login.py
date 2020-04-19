@@ -125,47 +125,62 @@ def searching():
     if uloga == 'menadzer':
         print("Dobrodosli!")
         m = input("Sta zelis da pregledas? (Unesi: namestaj, korisnici ili usluge) ")
-        while True:
-            if m == 'namestaj':
-                break
-            elif m == 'korisnici':
-                break
-            elif m == "usluge":
-                break
-            else:
-                print("Pogresio si. Molim te ukucaj ponovo")
-                m = input("Sta zelis da uradis? Sta zelis da pregledas? (Unesi: namestaj, korisnici ili usluge)")
-        y = ("Da li zelite da uradite nesto?(Unesite brisanje, izmena, dodavanje,ako zelite da izadjete pretisnite enter")
+        while m != 'namestaj' and m != 'korisnici' and m != 'usluge':
+            print("Pogresio si. Pokusaj ponovo.")
+            m = input("Sta zelis da pregledas? (Unesi: namestaj, korisnici ili usluge) ")
+        y = input("Da li zelite da uradite nesto?(Unesite brisanje, izmena, dodavanje,ako zelite da izadjete pretisnite enter) ")
         while y != 'brisanje' and y != 'izmena' and y != 'dodavanje' and y != '':
             print("Pogresio si. Molim te pokusaj ponovo")
-            y = ("Da li zelite da uradite nesto?(Unesite brisanje, izmena, dodavanje,ako zelite da izadjete pretisnite enter")
+            y = ("Da li zelite da uradite nesto?(Unesite brisanje, izmena, dodavanje,ako zelite da izadjete pretisnite enter) ")
+        def brisanje(parametar, lista, csv_fajl):
+            n = 0
+            while n == 0:
+                z = input("Unesite " + parametar + ": ")
+                for i in range(len(lista)):
+                    if z == lista[i][parametar]:
+                        delete(z, parametar , lista, csv_fajl)
+                        break
+                n += 1
+        def dodavanje(lista, csv_fajl):
+            keys = []
+            keys.append(list(lista[0].keys()))
+            new_dict = {}
+            for i in range(len(keys[0])):
+                x = input("Unesite " + keys[0][i] + " ")
+                new_dict[keys[0][i]] = x
+            lista.append(new_dict)
+            putanja = 'Podaci/' + csv_fajl + '.csv'
+            updateCsv(putanja, lista)
+        def izmena(ime, lista, csv_fajl):
+            ime1 = input("Unesite " + ime + " ")
+            vrednost = input("Unesite vrednost koju zelite da promenite ")
+            nova_vrednost = input("Unesite novu vrednost ")
+            changeValue(ime, ime1, vrednost, nova_vrednost,lista, csv_fajl)
         if m == 'namestaj':
             pregled(namestaj)
             if y == "brisanje":
-                while True:
-                    z = input("Unesite sifru namestaja: ")
-                    for i in range(len(namestaj)):
-                        if z == namestaj[i]['sifra']:
-                            delete(z, 'sifra', namestaj, 'namestaj')
-                            break
+                brisanje('sifra', namestaj, 'namestaj')
             elif y == 'dodavanje':
-                sifra = input("Unesite novu sifru namestaja")
-                naziv = input("Unesite novi naziv")
-                boja = input("Unesite boju namestaja")
-                kolicina = input("Unesite kolicinu novog namestaja")
-                cena = input("Unesite cenu namestaja")
-                kategorija = input("Unesite kategoriju namestaja")
-                
-                novi_namestaj = {'sifra': sifra, 'naziv': naziv, 'boja': boja, 'kolicina': kolicina,
-                'cena': cena, 'kategorija': kategorija}
-                namestaj.append(novi_namestaj)
-                updateCsv('Podaci/namestaj.csv', namestaj)
-
+               dodavanje(namestaj, 'namestaj')
+            elif y == 'izmena':
+                izmena('sifra', namestaj, 'namestaj')
 
         elif m == 'korisnici':
             pregled(korisnici)
+            if y == 'brisanje':
+                brisanje('korisnicko ime', korisnici, 'korisnici')
+            elif y == 'dodavanje':
+                dodavanje(korisnici, 'korisnici')
+            elif y == 'izmena':
+                izmena('korisnicko ime', korisnici, 'korisnici')
         elif m == 'usluge':
             pregled(usluge)
+            if y == 'brisanje':
+                brisanje('naziv', usluge, 'usluge')
+            elif y == 'dodavanje':
+                dodavanje(usluge, 'usluge')
+            elif y == 'izmena':
+                izmena('naziv', usluge, 'usluge')
         
 searching()
 
