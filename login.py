@@ -84,7 +84,8 @@ def count():
     sum = 0
     for i in range(len(korpa)):
         sum += int(korpa[i]['cena'])
-    print("Vas ukupan racun iznosi: " + sum)
+    print("Vas ukupan racun iznosi: " + str(sum))
+
 def searching():
     if uloga == 'kupac':
         print("Dobrodosli!")
