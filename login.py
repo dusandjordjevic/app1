@@ -42,10 +42,10 @@ def login():
 uloga = login()
 korpa = []
 def kupovina():
-    x = input("Da li zelite da odmah kupite proizvod ili zelite da pogledate katalog?(Napisite: kupovina ili pregled): ")
-    while x != 'kupovina' and x != 'pregled':
+    x = input("Da li zelite da odmah kupite proizvod, da pretraite proizvode ili da samo pregledate?(Napisite: kupovina, pretraga ili  pregled): ")
+    while x != 'kupovina' and x != 'pregled' and x != 'pretraga':
         print("Molim vas da unesete kupovina ili pregled.")
-        x = input("Da li zelite da odmah kupite proizvod ili zelite da pogledate katalog?(Napisite: kupovina ili pregled): ")
+        x = input("Da li zelite da odmah kupite proizvod, da pretraite proizvode ili da samo pregledate?(Napisite: kupovina, pretraga ili  pregled): ")
     if x == 'kupovina':
         y = 0
         while y == 0:
@@ -73,7 +73,14 @@ def kupovina():
                 print("Pokusajte ponovo")
     if x == 'pregled':
         pregled(namestaj)
+    if x == 'pretraga':
+        pretraga()
 
+def pretraga():
+    x = input("Unesite ime namestaja : ")
+    for i in range(len(namestaj)):
+        if x == namestaj[i]['naziv']:
+            print(namestaj[i])
 def pregled(csv_fajl):
     keys = list(csv_fajl[0].keys())
     line = " | "
