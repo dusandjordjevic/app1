@@ -133,14 +133,17 @@ def searching():
 
     if uloga == 'menadzer':
         print("Dobrodosli!")
-        m = input("Sta zelis da pregledas? (Unesi: namestaj, korisnici ili usluge) ")
-        while m != 'namestaj' and m != 'korisnici' and m != 'usluge':
+        m = input("Sta zelis da pregledas? (Unesi: namestaj, korisnici, izvestaji ili usluge) ")
+        while m != 'namestaj' and m != 'korisnici' and m != 'usluge' and m != 'izvestaji' :
             print("Pogresio si. Pokusaj ponovo.")
-            m = input("Sta zelis da pregledas? (Unesi: namestaj, korisnici ili usluge) ")
-        y = input("Da li zelite da uradite nesto?(Unesite brisanje, izmena, dodavanje,ako zelite da izadjete pretisnite enter) ")
-        while y != 'brisanje' and y != 'izmena' and y != 'dodavanje' and y != '':
-            print("Pogresio si. Molim te pokusaj ponovo")
-            y = ("Da li zelite da uradite nesto?(Unesite brisanje, izmena, dodavanje,ako zelite da izadjete pretisnite enter) ")
+            m = input("Sta zelis da pregledas? (Unesi: namestaj, korisnici, izvestaji ili usluge) ")
+        if m == 'izvestaji':
+            pass
+        else:
+            y = input("Da li zelite da uradite nesto?(Unesite brisanje, izmena, dodavanje,ako zelite da izadjete pretisnite enter) ")
+            while y != 'brisanje' and y != 'izmena' and y != 'dodavanje' and y != '':
+                print("Pogresio si. Molim te pokusaj ponovo")
+                y = ("Da li zelite da uradite nesto?(Unesite brisanje, izmena, dodavanje,ako zelite da izadjete pretisnite enter) ")
         def brisanje(parametar, lista, csv_fajl):
             n = 0
             while n == 0:
@@ -190,6 +193,7 @@ def searching():
                 dodavanje(usluge, 'usluge')
             elif y == 'izmena':
                 izmena('naziv', usluge, 'usluge')
+       
         
 searching()
 
