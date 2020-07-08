@@ -78,9 +78,10 @@ def kupovina():
 
 def pretraga():
     x = input("Unesite ime namestaja : ")
+    print(*list(namestaj[0].keys()), sep = ' | ')
     for i in range(len(namestaj)):
         if x == namestaj[i]['naziv']:
-            print(namestaj[i])
+            print(*list(namestaj[i].values()), sep = " | ")
 def pregled(csv_fajl):
     keys = list(csv_fajl[0].keys())
     line = " | "
